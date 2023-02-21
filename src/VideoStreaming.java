@@ -1,9 +1,7 @@
 import java.net.*;
 import java.io.*;
-import java.awt.image.*;
-import java.awt.FlowLayout;
+import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
-import javax.swing.*;
 
 public class VideoStreaming{
     public static void main(String[] args){
@@ -19,16 +17,8 @@ public class VideoStreaming{
                 socket.receive(packet);
                 ByteArrayInputStream inStream = new ByteArrayInputStream(buffer);
                 BufferedImage newImage = ImageIO.read(inStream);
-                
-                ImageIcon icon = new ImageIcon(newImage);
-                JFrame nFrame = new JFrame();
-                nFrame.setLayout(new FlowLayout());
-                nFrame.setSize(1280,720);
-                JLabel lbl = new JLabel();
-                lbl.setIcon(icon);
-                nFrame.add(lbl);
-                nFrame.setVisible(true);
-                nFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                ImageIO.write(newImage, "jpg" , new File("output.jpg"));
+                System.out.println("image generated");
             }
         }
         catch(SocketException e){
