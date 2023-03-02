@@ -34,7 +34,7 @@ public class VideoStreaming{
 
                 nFrame.setVisible(true);
                 nFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                timer--; 
+                timer--;
             }
         }
         catch(SocketException e){
