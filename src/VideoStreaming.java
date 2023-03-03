@@ -12,13 +12,10 @@ public class VideoStreaming{
         nFrame.setLayout(new FlowLayout());
         nFrame.setSize(1280,720);
         JLabel lbl = new JLabel();
-
         
         int timer = 10000;
-        try{
+        try(DatagramSocket socket = new DatagramSocket(12345)){
             System.out.println("Starting");
-            DatagramSocket socket = new DatagramSocket(12345);
-
             //Currently, endless loop
             while(timer != 0){
                 byte[] buffer = new byte[65536];
@@ -35,6 +32,7 @@ public class VideoStreaming{
                 nFrame.setVisible(true);
                 nFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 timer--;
+                System.out.println(timer);
             }
         }
         catch(SocketException e){
