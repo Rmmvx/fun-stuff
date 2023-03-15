@@ -10,7 +10,7 @@ public class clientController{
     /**
      * Local host IP address used for testing
      */
-    private String localHost = "127.0.0.1";
+    public static String localHost = "127.0.0.1";
     /**
      * Variable to keep track of messages from server
      */
@@ -40,11 +40,22 @@ public class clientController{
             
             //Sends string to beaglebone
             sendMessage.print(serverPass);
+            sendMessage.flush();
 
+            String check = receivedMessage.readLine().toString();
             //Checks if beaglebone sends correct password
-            if (!receivedMessage.readLine().equals(clientPass)){
-                System.out.println("Incorrect beaglebone device");
+            if (check == null){
+                System.out.println("Connection terminated");
+                socket.close();
                 return null;
+            }
+            if (!check.equals(clientPass)){
+                System.out.println("Incorrect beaglebone device");
+                socket.close();
+                return null;
+            }
+            else{
+                return socket;
             }
         }
         catch(IOException e){
@@ -54,5 +65,21 @@ public class clientController{
         }
 
         return socket;
+    }
+
+    public static void main(String[] args){
+        Socket s = new clientController().createConnection(12345, localHost, "none", "none");
+        if (s != null){
+            System.out.println("success connecting!");
+            try{
+                s.close();
+            }
+            catch(IOException e){
+
+            }
+        }
+        else{
+            System.out.println("Unsuccessful");
+        }
     }
 }
