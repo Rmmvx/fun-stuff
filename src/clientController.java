@@ -42,15 +42,15 @@ public class clientController{
             sendMessage.print(serverPass);
             sendMessage.flush();
 
-            String check = receivedMessage.readLine().toString();
-            //Checks if beaglebone sends correct password
-            if (check == null){
-                System.out.println("Connection terminated");
-                socket.close();
-                return null;
+            String check = null;
+            try{
+                check = receivedMessage.readLine().toString();
             }
-            if (!check.equals(clientPass)){
-                System.out.println("Incorrect beaglebone device");
+            catch(Exception e){
+            }
+            //Checks if beaglebone sends correct password
+            if (check == null || !check.equals((clientPass))){
+                System.out.println("Connection terminated");
                 socket.close();
                 return null;
             }
@@ -67,6 +67,10 @@ public class clientController{
         return socket;
     }
 
+    /** Main method for debugging
+     * 
+     * @param args
+     */
     public static void main(String[] args){
         Socket s = new clientController().createConnection(12345, localHost, "none", "none");
         if (s != null){
