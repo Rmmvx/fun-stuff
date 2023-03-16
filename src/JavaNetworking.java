@@ -66,7 +66,7 @@ public class JavaNetworking {
                 s.close();
             }
             catch(IOException e){
-
+                e.printStackTrace();
             }
         }
         else{
