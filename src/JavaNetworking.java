@@ -1,38 +1,29 @@
-/* This class is responsible for connecting and communicating with
+/** This class is responsible for connecting and communicating with
  * the main python class in the beaglebone.
- * 
+ * @author Romel Munoz Valencia
  */
-
 import java.net.*;
 import java.io.*;
 
-public class clientController{
+public class JavaNetworking {
     /**
-     * Local host IP address used for testing
-     */
-    public static String localHost = "127.0.0.1";
-    /**
-     * Variable to keep track of messages from server
-     */
-    private BufferedReader receivedMessage;
-
-    /**
-     * variable that sends GUI input to server
-     */
-    private PrintWriter sendMessage;
-
+    * Local host IP address used for testing
+    */
+    public static final String LOCAL_HOST = "127.0.0.1";
 
     /** This method listens in a specified port
-     * if a connection can be made, it returns the socket through which
-     * communication can be made.
-     * 
-     * @param portNumber user specified port number
-     * @param password message recognized by our beaglebone server program
-     * 
-     * @return socket through which communication is possible.
-     */
+    * if a connection can be made, it returns the socket through which
+    * communication can be made.
+    * 
+    * @param portNumber user specified port number
+    * @param password message recognized by our beaglebone server program
+    * 
+    * @return socket through which communication is possible.
+    */
     public Socket createConnection(int portNumber, String hostName, String clientPass, String serverPass){
         Socket socket = null;
+        BufferedReader receivedMessage;
+        PrintWriter sendMessage;
         try{
             socket = new Socket(hostName, portNumber);
             receivedMessage = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -43,14 +34,10 @@ public class clientController{
             sendMessage.flush();
 
             String check = null;
-            try{
-                check = receivedMessage.readLine().toString();
-            }
-            catch(Exception e){
-            }
+            check = receivedMessage.readLine();
+            
             //Checks if beaglebone sends correct password
             if (check == null || !check.equals((clientPass))){
-                System.out.println("Connection terminated");
                 socket.close();
                 return null;
             }
@@ -72,7 +59,7 @@ public class clientController{
      * @param args
      */
     public static void main(String[] args){
-        Socket s = new clientController().createConnection(12345, localHost, "none", "none");
+        Socket s = new JavaNetworking().createConnection(12345, LOCAL_HOST, "none", "none");
         if (s != null){
             System.out.println("success connecting!");
             try{
