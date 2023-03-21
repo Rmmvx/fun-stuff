@@ -183,6 +183,25 @@ public class JavaNetworking {
      * @return true if stream starts successfully
      */
     public boolean startStreaming(Socket socket){
+        if (socket == null){
+            return false;
+        }
+        try{
+            this.sendMessage.print("4");
+            this.sendMessage.flush();
+
+            String confirmed = null;
+            confirmed = this.readMessage.readLine();
+            if (confirmed == null || !confirmed.equals("Streaming")){
+                return false;
+            }
+            else{
+                return true;
+            }
+        }
+        catch(IOException e){
+            e.printStackTrace();
+        }
         return false;
     }
 
@@ -197,7 +216,46 @@ public class JavaNetworking {
         if (!startStreaming(socket)){
             return true;
         }
+        else{
+            try{
+                this.sendMessage.print("5");
+                this.sendMessage.flush();
+
+                String confirmed = null;
+                confirmed = this.readMessage.readLine();
+                if (confirmed == null || !confirmed.equals("Not streaming")){
+                    flag = false;
+                }
+                else{
+                    flag = true;
+                }
+            }
+            catch(IOException e){
+                e.printStackTrace();
+                flag = false;
+            }
+        }
         return flag;
+    }
+
+    /** This method closes the open socket and any other resource
+     * @param socket
+     * @return 0 if success, -1 if any error
+     */
+    public int cleanUp(Socket socket){
+        if (socket != null){
+            try{
+                socket.close();
+                readMessage.close();
+                sendMessage.close();
+                stopStreaming(socket);
+            }
+            catch(IOException e){
+                e.printStackTrace();
+                return -1;
+            }
+        }
+        return 0;
     }
     /** Main method for debugging
      * 
@@ -213,6 +271,8 @@ public class JavaNetworking {
                 System.out.println(j.moveRight(s));
                 System.out.println(j.moveForward(s));
                 System.out.println(j.moveInReverse(s));
+                System.out.println(j.startStreaming(s));
+                System.out.println(j.stopStreaming(s));
                 s.close();
             }
             catch(IOException e){
