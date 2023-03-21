@@ -10,7 +10,16 @@ public class JavaNetworking {
      * Local host IP address used for testing
      */
     public static final String LOCAL_HOST = "127.0.0.1";
+    
+    /**
+     * readsMessages from beagleBone
+     */
+    private BufferedReader readMessage;
 
+    /**
+     * sends messages to beagleBone
+     */
+    private PrintWriter sendMessage;
     /** This method listens in a specified port
      * if a connection can be made, it returns the socket through which
      * communication can be made.
@@ -22,22 +31,22 @@ public class JavaNetworking {
      */
     public Socket createConnection(int portNumber, String hostName, String clientPass, String serverPass){
         Socket socket = null;
-        BufferedReader receivedMessage;
-        PrintWriter sendMessage;
         try{
             socket = new Socket(hostName, portNumber);
-            receivedMessage = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            sendMessage = new PrintWriter(socket.getOutputStream(), true);
+            this.readMessage = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            this.sendMessage = new PrintWriter(socket.getOutputStream(), true);
             
             //Sends string to beaglebone
             sendMessage.print(serverPass);
             sendMessage.flush();
 
             String check = null;
-            check = receivedMessage.readLine();
-            
+            check = readMessage.readLine();
+
             //Checks if beaglebone sends correct password
             if (check == null || !check.equals((clientPass))){
+                sendMessage.close();
+                readMessage.close();
                 socket.close();
                 return null;
             }
@@ -63,7 +72,26 @@ public class JavaNetworking {
      * @return 0 if success
      */
     public int moveLeft(Socket socket){
-        return 0;
+        int output = 0;
+        if (socket == null){
+            return -1;
+        }
+        try{
+            this.sendMessage.print("0");
+            this.sendMessage.flush();
+            //if method call on beaglebone is successful, we receive "0" as confirmation
+            //Next few lines check for this message.
+            String confirmed = null;
+            confirmed = this.readMessage.readLine();
+            if(confirmed == null || !confirmed.equals("0")){
+                output = -1;
+                return output;
+            }
+        }
+        catch(IOException e){
+            output = -1;
+        }
+        return output;
     }
     
     /** Sends comnand to beablebone to move right
@@ -72,7 +100,26 @@ public class JavaNetworking {
      * @return 0 if success
      */
     public int moveRight(Socket socket){
-        return 0;
+        int output = 0;
+        if (socket == null){
+            return -1;
+        }
+        try{
+            this.sendMessage.print("1");
+            this.sendMessage.flush();
+            //if method call on beaglebone is successful, we receive "0" as confirmation
+            //Next few lines check for this message.
+            String confirmed = null;
+            confirmed = this.readMessage.readLine();
+            if(confirmed == null || !confirmed.equals("1")){
+                output = -1;
+                return output;
+            }
+        }
+        catch(IOException e){
+            output = -1;
+        }
+        return output;
     }
 
     /** Sends command to move forwards
@@ -80,7 +127,26 @@ public class JavaNetworking {
      * @return 0 if success
      */
     public int moveForward(Socket socket){
-        return 0;
+        int output = 0;
+        if (socket == null){
+            return -1;
+        }
+        try{
+            this.sendMessage.print("2");
+            this.sendMessage.flush();
+            //if method call on beaglebone is successful, we receive "0" as confirmation
+            //Next few lines check for this message.
+            String confirmed = null;
+            confirmed = this.readMessage.readLine();
+            if(confirmed == null || !confirmed.equals("2")){
+                output = -1;
+                return output;
+            }
+        }
+        catch(IOException e){
+            output = -1;
+        }
+        return output;
     }
 
     /** Sends command to either back up
@@ -89,7 +155,26 @@ public class JavaNetworking {
      * @return 0 if success
      */
     public int moveInReverse(Socket socket){
-        return 0;
+        int output = 0;
+        if (socket == null){
+            return -1;
+        }
+        try{
+            this.sendMessage.print("3");
+            this.sendMessage.flush();
+            //if method call on beaglebone is successful, we receive "0" as confirmation
+            //Next few lines check for this message.
+            String confirmed = null;
+            confirmed = this.readMessage.readLine();
+            if(confirmed == null || !confirmed.equals("3")){
+                output = -1;
+                return output;
+            }
+        }
+        catch(IOException e){
+            output = -1;
+        }
+        return output;
     }
     /** This method sends the command to start video streaming
      * 
@@ -119,10 +204,15 @@ public class JavaNetworking {
      * @param args
      */
     public static void main(String[] args){
-        Socket s = new JavaNetworking().createConnection(12345, LOCAL_HOST, "none", "none");
-        if (s != null){
+        JavaNetworking j = new JavaNetworking();
+        Socket s = j.createConnection(12345, LOCAL_HOST, "none", "none");
+        if (s.isConnected()){
             System.out.println("success connecting!");
             try{
+                System.out.println(j.moveLeft(s));
+                System.out.println(j.moveRight(s));
+                System.out.println(j.moveForward(s));
+                System.out.println(j.moveInReverse(s));
                 s.close();
             }
             catch(IOException e){
@@ -130,7 +220,7 @@ public class JavaNetworking {
             }
         }
         else{
-            System.out.println("Unsuccessful");
+            System.out.println("Unsuccessful, socket is closed");
         }
     }
 }
