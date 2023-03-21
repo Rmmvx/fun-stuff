@@ -102,6 +102,8 @@ public class JavaNetworking {
                     System.out.println("Exiting all processes");
                     cleanUp(socket);
                     break;
+                default:
+                    break;
             }
 
             confirmed = readMessage.readLine();
