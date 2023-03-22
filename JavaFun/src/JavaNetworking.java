@@ -101,18 +101,22 @@ public class JavaNetworking {
                 case 'q':
                     System.out.println("Exiting all processes");
                     sendMessage.print("q");
-                    sendMessage.flush();
                     cleanUp(socket);
-                    break;
+                    return 0;
                 default:
                     System.out.println(command);
                     sendMessage.print("invalid");
                     sendMessage.flush();
                     break;
             }
-
-            confirmed = readMessage.readLine();
-            if (confirmed == null){
+            if (socket.isConnected()){
+                confirmed = readMessage.readLine();
+            
+                if (confirmed == null){
+                    output = -1;
+                }
+            }
+            else{
                 output = -1;
             }
         }
@@ -189,7 +193,7 @@ public class JavaNetworking {
      * @return 0 if success, -1 if any error
      */
     public int cleanUp(Socket socket){
-        if (socket != null){
+        if (socket != null && socket.isConnected()){
             try{
                 stopStreaming(socket);
                 this.sendMessage.close();
