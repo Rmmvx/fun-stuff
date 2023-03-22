@@ -226,10 +226,11 @@ public class JavaNetworking {
                 System.out.println(j.move(s, 'b'));
                 System.out.println(j.startStreaming(s));
                 System.out.println(j.stopStreaming(s));
-                System.out.println(j.move(s, 'q'));
+                System.out.println(j.move(s, 'e'));
                 if (s.isClosed()){
                     break;
                 }
+                System.out.println(i);
                 i++;
             }
         }
