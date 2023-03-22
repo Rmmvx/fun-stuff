@@ -105,8 +105,9 @@ public class JavaNetworking {
                     cleanUp(socket);
                     break;
                 default:
-                    sendMessage.flush();
                     System.out.println(command);
+                    sendMessage.print("invalid");
+                    sendMessage.flush();
                     break;
             }
 
@@ -221,9 +222,10 @@ public class JavaNetworking {
                 System.out.println(j.move(s, 'b'));
                 System.out.println(j.startStreaming(s));
                 System.out.println(j.stopStreaming(s));
-                //System.out.println(j.move(s, 'p'));
-                //System.out.println(s.isClosed());
-                System.out.println("i");
+                System.out.println(j.move(s, 'q'));
+                if (s.isClosed()){
+                    break;
+                }
                 i++;
             }
         }
