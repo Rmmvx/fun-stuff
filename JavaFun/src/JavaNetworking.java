@@ -100,9 +100,13 @@ public class JavaNetworking {
                     break;
                 case 'q':
                     System.out.println("Exiting all processes");
+                    sendMessage.print("q");
+                    sendMessage.flush();
                     cleanUp(socket);
                     break;
                 default:
+                    sendMessage.flush();
+                    System.out.println(command);
                     break;
             }
 
@@ -205,17 +209,23 @@ public class JavaNetworking {
      */
     public static void main(String[] args){
         JavaNetworking j = new JavaNetworking();
+        int i = 0;
         Socket s = j.createConnection(12345, LOCAL_HOST, "none", "none");
         if (s != null && s.isConnected()){
-            System.out.println("success connecting!");
-            System.out.println(j.move(s, 'l'));               
-            System.out.println(j.move(s, 'r'));
-            System.out.println(j.move(s, 'f'));
-            System.out.println(j.move(s, 'b'));
-            System.out.println(j.startStreaming(s));
-            System.out.println(j.stopStreaming(s));
-            System.out.println(j.move(s, 'q'));
-            System.out.println(s.isClosed());
+            while(i <100){
+
+                System.out.println("success connecting!");
+                System.out.println(j.move(s, 'l'));               
+                System.out.println(j.move(s, 'r'));
+                System.out.println(j.move(s, 'f'));
+                System.out.println(j.move(s, 'b'));
+                System.out.println(j.startStreaming(s));
+                System.out.println(j.stopStreaming(s));
+                //System.out.println(j.move(s, 'p'));
+                //System.out.println(s.isClosed());
+                System.out.println("i");
+                i++;
+            }
         }
         else{
             System.out.println("Unsuccessful, socket is closed");
